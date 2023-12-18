@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Robot Web Control</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/tailwind.js"></script>
+
+
+    <script type="text/javascript" src="js/roslib.min.js"></script>
+    <script type="text/javascript" src="js/joy.min.js"></script>
+
+    <script type="text/javascript" type="text/javascript">
+
+
+        // var joy = new JoyStick('joyDiv');
+
+        // setInterval(function () { x.value = joy.GetX(); }, 50);
+        // cmdVel.publish(twist);
+
+        // Subscribing to a Topic
+        // ----------------------
+
+        // var listener = new ROSLIB.Topic({
+        //     ros: ros,
+        //     name: '/listener',
+        //     messageType: 'std_msgs/String'
+        // });
+
+        // listener.subscribe(function (message) {
+        //     console.log('Received message on ' + listener.name + ': ' + message.data);
+        //     listener.unsubscribe();
+        // });
+
+    </script>
+</head>
+
+<body class="p-4">
+    <h1 class="text-3xl font-bold">Robot WebSocket Control</h1>
+    <p>This page serves to document the message types for commmunication with the integrated control system for a rover
+        platform and robotic arm. It also provides the ability to send and receive these messages directly.</p>
+    <div class="m-2 p-2 border-2 rounded-lg">
+        <h2 class="text-2xl font-bold">Robot Connection</h2>
+        <p>Connection Status: <span id="status" style="font-bold">N/A</span></p>
+    </div>
+    <div class="m-2 p-2 border-2 rounded-lg">
+        <h2 class="text-2xl font-bold">Message #1: Twist</h2>
+        The Twist message provides speed control for the rover platform. It of type <code>geometry_msgs/Twist</code> on
+        the
+        topic <code>/cmd_vel</code>, defined as:
+        <pre>
+# This expresses velocity in free space broken into its linear and angular parts.
+Vector3 linear
+Vector3 angular
+    </pre>
+        <p>The below Joystick can be used to send Twist messages.</p>
+        <div id="joyDiv" style="width:200px; height:200px;"></div>
+    </div>
+
+    <script type="text/javascript">
+        // Connecting to ROS
+        // -----------------
+
+        var ros = new ROSLIB.Ros({
+            url: 'ws://192.168.0.100:9090'
+        });
+
+        ros.on('connection', function () {
+            console.log('Connected to websocket server.');
+            document.getElementById("status").innerHTML = "Successful";
+        });
+
+        ros.on('error', function (error) {
+            console.log('Error connecting to websocket server: ', error);
+            document.getElementById("status").innerHTML = `Error: (${error})`;
+        });
+
+        ros.on('close', function () {
+            console.log('Connection to websocket server closed.');
+            document.getElementById("status").innerHTML = "Closed";
+        });
+
+        // Publishing a Topic
+        // ------------------
+
+        var cmdVel = new ROSLIB.Topic({
+            ros: ros,
+            name: '/cmd_vel',
+            messageType: 'geometry_msgs/Twist'
+        });
+
+        // var twist = new ROSLIB.Message({
+        //     linear: {
+        //         x: 0.1,
+        //         y: 0.2,
+        //         z: 0.3
+        //     },
+        //     angular: {
+        //         x: -0.1,
+        //         y: -0.2,
+        //         z: -0.3
+        //     }
+        // });
+
+        // Create JoyStick object into the DIV 'joyDiv'
+        var joy = new JoyStick('joyDiv');
+
+        setInterval(function () {
+            var twist = new ROSLIB.Message({
+                linear: {
+                    x: parseFloat(joy.GetY() / 1000),
+                    y: 0,
+                    z: 0
+                },
+                angular: {
+                    x: 0,
+                    y: 0,
+                    z: -parseFloat(joy.GetX() / 1000)
+                }
+            });
+            cmdVel.publish(twist);
+        }, 50);
+    </script>
+</body>
+
+
+
+</html>
