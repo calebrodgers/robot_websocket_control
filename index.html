@@ -58,8 +58,79 @@ Vector3 angular</pre>
         <div id="joyDiv" style="width:200px; height:200px;"></div>
     </div>
 
+
     <div class="m-2 p-2 border-2 rounded-lg">
-        <h2 class="text-2xl font-bold">Message #2: JointAngles</h2>
+        <h2 class="text-2xl font-bold">Message #2: BunkerStatus</h2>
+        The BunkerStatus message provides feedback from the rover platform. It is on the topic
+        <code>/bunker_status</code> and of
+        type
+        <code>bunker_msgs/BunkerStatus</code>, defined as:
+        <pre class="bg-teal-100 p-2 rounded-lg w-fit">
+std_msgs/Header header
+
+int8 MOTOR_ID_FRONT_RIGHT = 0
+int8 MOTOR_ID_FRONT_LEFT = 1
+int8 MOTOR_ID_REAR_RIGHT = 2
+int8 MOTOR_ID_REAR_LEFT = 3
+            
+int8 LIGHT_ID_FRONT = 0
+int8 LIGHT_ID_REAR = 1
+            
+# motion state
+float64 linear_velocity
+float64 angular_velocity
+            
+# base state
+uint8 vehicle_state
+uint8 control_mode
+uint16 error_code
+float64 battery_voltage
+            
+# motor state
+BunkerActuatorState[2] actuator_states
+            
+# bool light_control_enabled
+# TracerLightState front_light_state
+            
+#odometer state
+# float64 left_odomter
+# float64 right_odomter</pre>
+
+        Where <code>BunkerActuatorState</code> is defined as
+
+        <pre class="bg-teal-100 p-2 rounded-lg w-fit">
+#define DRIVER_STATE_INPUT_VOLTAGE_LOW_MASK ((uint8_t)0x01)
+#define DRIVER_STATE_MOTOR_OVERHEAT_MASK ((uint8_t)0x02)
+#define DRIVER_STATE_DRIVER_OVERLOAD_MASK ((uint8_t)0x04)
+#define DRIVER_STATE_DRIVER_OVERHEAT_MASK ((uint8_t)0x08)
+#define DRIVER_STATE_SENSOR_FAULT_MASK ((uint8_t)0x10)
+#define DRIVER_STATE_DRIVER_FAULT_MASK ((uint8_t)0x20)
+#define DRIVER_STATE_DRIVER_ENABLED_MASK ((uint8_t)0x40)
+#define DRIVER_STATE_DRIVER_RESET_MASK ((uint8_t)0x80)
+            
+uint8 motor_id
+int16 rpm
+float64 current
+int32 pulse_count
+            
+float32 driver_voltage
+float32 driver_temperature
+int8 motor_temperature
+uint8 driver_state</pre>
+
+        <p>Some key feedback can be seen below: </p>
+        <p>Linear velocity: <span style="font-bold" id="bunker_status_linear_velocity"></span></p>
+        <p>Angular velocity: <span style="font-bold" id="bunker_status_angular_velocity"></span></p>
+        <p>Battery voltage: <span style="font-bold" id="bunker_status_battery_voltage"></span></p>
+        <p>Left RPM: <span style="font-bold" id="bunker_status_left_rpm"></span></p>
+        <p>Right RPM: <span style="font-bold" id="bunker_status_right_rpm"></span></p>
+    </div>
+
+
+
+
+    <div class="m-2 p-2 border-2 rounded-lg">
+        <h2 class="text-2xl font-bold">Message #3: JointAngles</h2>
         The JoinAngles message provides control for the robotic arm. It is on the topic <code>/arm_joint_angles</code>
         and of
         type
@@ -143,7 +214,7 @@ float64 joint5</pre>
 [&::-moz-range-track]:w-full
 [&::-moz-range-track]:h-2
 [&::-moz-range-track]:bg-gray-100
-[&::-moz-range-track]:rounded-full" id="slider1" min="-174" max="174" onmouseup="updateSliders()"
+[&::-moz-range-track]:rounded-full" id="slider1" min="-90" max="90" onmouseup="updateSliders()"
             ontouchend="updateSliders()">
 
         <label for="slider2">Joint 2: <span id="slider2feedback">0</span>&deg;</label>
@@ -294,7 +365,7 @@ float64 joint5</pre>
 [&::-moz-range-track]:rounded-full" id="slider5" min="-174" max="174" onmouseup="updateSliders()"
             ontouchend="updateSliders()">
 
-
+        <button onclick="zeroAngle()">Reset to Zero</button>
     </div>
 
 
@@ -303,7 +374,7 @@ float64 joint5</pre>
         // -----------------
 
         var ros = new ROSLIB.Ros({
-            url: 'ws://192.168.0.100:9090'
+            url: 'ws://192.168.0.101:9090'
         });
 
         ros.on('connection', function () {
@@ -321,6 +392,29 @@ float64 joint5</pre>
             document.getElementById("status").innerHTML = "Closed";
         });
 
+
+        bunker_status_listener = new ROSLIB.Topic({
+            ros,
+            name: "/bunker_status",
+            messageType: "bunker_msgs/BunkerStatus",
+        });
+
+        bunker_status_listener.subscribe((message) => {
+            // const ul = document.getElementById("messages");
+            // const newMessage = document.createElement("li");
+            // newMessage.appendChild(document.createTextNode(message.data));
+            // ul.appendChild(newMessage);
+            console.log(message);
+            document.getElementById("bunker_status_linear_velocity").innerHTML = message.linear_velocity;
+            document.getElementById("bunker_status_angular_velocity").innerHTML = message.angular_velocity;
+
+            document.getElementById("bunker_status_battery_voltage").innerHTML = message.battery_voltage;
+
+            document.getElementById("bunker_status_left_rpm").innerHTML = message.actuator_states[1].rpm;
+            document.getElementById("bunker_status_right_rpm").innerHTML = message.actuator_states[0].rpm;
+        });
+
+
         // Publishing a Topic
         // ------------------
 
@@ -332,9 +426,11 @@ float64 joint5</pre>
 
         var cmdAngle = new ROSLIB.Topic({
             ros: ros,
-            name: '/arm_joint_angles',
+            name: '/set_arm_joint_angles',
             messageType: 'aubo_interface_msgs/JointAngles'
         });
+
+
 
 
 
@@ -363,27 +459,38 @@ float64 joint5</pre>
             slider5feedback.innerHTML = slider5.value;
 
             var angles = new ROSLIB.Message({
-                joint0: slider0.value,
-                joint1: slider1.value,
-                joint2: slider2.value,
-                joint3: slider3.value,
-                joint4: slider4.value,
-                joint5: slider5.value
+                joint0: parseFloat(slider0.value),
+                joint1: parseFloat(slider1.value),
+                joint2: parseFloat(slider2.value),
+                joint3: parseFloat(slider3.value),
+                joint4: parseFloat(slider4.value),
+                joint5: parseFloat(slider5.value)
             });
             cmdAngle.publish(angles);
+        }
+
+        function zeroAngle() {
+            slider0.value = 0;
+            slider1.value = 0;
+            slider2.value = 0;
+            slider3.value = 0;
+            slider4.value = 0;
+            slider5.value = 0;
+
+            updateSliders();
         }
 
         setInterval(function () {
             var twist = new ROSLIB.Message({
                 linear: {
-                    x: parseFloat(joy.GetY() / 200),
+                    x: parseFloat(joy.GetY() / 500),
                     y: 0,
                     z: 0
                 },
                 angular: {
                     x: 0,
                     y: 0,
-                    z: -parseFloat(joy.GetX() / 200)
+                    z: -parseFloat(joy.GetX() / 500)
                 }
             });
             cmdVel.publish(twist);
