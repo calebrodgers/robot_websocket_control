@@ -47,17 +47,256 @@
     </div>
     <div class="m-2 p-2 border-2 rounded-lg">
         <h2 class="text-2xl font-bold">Message #1: Twist</h2>
-        The Twist message provides speed control for the rover platform. It of type <code>geometry_msgs/Twist</code> on
-        the
-        topic <code>/cmd_vel</code>, defined as:
-        <pre>
+        The Twist message provides speed control for the rover platform. It is on the topic <code>/cmd_vel</code> and of
+        type
+        <code>geometry_msgs/Twist</code>, defined as:
+        <pre class="bg-teal-100 p-2 rounded-lg w-fit">
 # This expresses velocity in free space broken into its linear and angular parts.
 Vector3 linear
-Vector3 angular
-    </pre>
+Vector3 angular</pre>
         <p>The below Joystick can be used to send Twist messages.</p>
         <div id="joyDiv" style="width:200px; height:200px;"></div>
     </div>
+
+    <div class="m-2 p-2 border-2 rounded-lg">
+        <h2 class="text-2xl font-bold">Message #2: JointAngles</h2>
+        The JoinAngles message provides control for the robotic arm. It is on the topic <code>/arm_joint_angles</code>
+        and of
+        type
+        <code>aubo_interface_msgs/JointAngles</code>, defined as:
+        <pre class="bg-teal-100 p-2 rounded-lg w-fit">
+float64 joint0
+float64 joint1
+float64 joint2
+float64 joint3
+float64 joint4
+float64 joint5</pre>
+        <p>The below controls can be used to send JointAngles messages.</p>
+        <label for="slider0">Joint 0: <span id="slider0feedback">0</span>&deg;</label>
+        <input type="range" class="w-full bg-transparent cursor-pointer appearance-none disabled:opacity-50 disabled:pointer-events-none focus:outline-none
+[&::-webkit-slider-thumb]:w-2.5
+[&::-webkit-slider-thumb]:h-2.5
+[&::-webkit-slider-thumb]:-mt-0.5
+[&::-webkit-slider-thumb]:appearance-none
+[&::-webkit-slider-thumb]:bg-white
+[&::-webkit-slider-thumb]:shadow-[0_0_0_4px_rgba(37,99,235,1)]
+[&::-webkit-slider-thumb]:rounded-full
+[&::-webkit-slider-thumb]:transition-all
+[&::-webkit-slider-thumb]:duration-150
+[&::-webkit-slider-thumb]:ease-in-out
+[&::-webkit-slider-thumb]:dark:bg-slate-700
+
+[&::-moz-range-thumb]:w-2.5
+[&::-moz-range-thumb]:h-2.5
+[&::-moz-range-thumb]:appearance-none
+[&::-moz-range-thumb]:bg-white
+[&::-moz-range-thumb]:border-4
+[&::-moz-range-thumb]:border-blue-600
+[&::-moz-range-thumb]:rounded-full
+[&::-moz-range-thumb]:transition-all
+[&::-moz-range-thumb]:duration-150
+[&::-moz-range-thumb]:ease-in-out
+
+[&::-webkit-slider-runnable-track]:w-full
+[&::-webkit-slider-runnable-track]:h-2
+[&::-webkit-slider-runnable-track]:bg-gray-100
+[&::-webkit-slider-runnable-track]:rounded-full
+[&::-webkit-slider-runnable-track]:dark:bg-gray-700
+
+[&::-moz-range-track]:w-full
+[&::-moz-range-track]:h-2
+[&::-moz-range-track]:bg-gray-100
+[&::-moz-range-track]:rounded-full" id="slider0" min="-174" max="174" onmouseup="updateSliders()"
+            ontouchend="updateSliders()">
+
+        <label for="slider1">Joint 1: <span id="slider1feedback">0</span>&deg;</label>
+        <input type="range" class="w-full bg-transparent cursor-pointer appearance-none disabled:opacity-50 disabled:pointer-events-none focus:outline-none
+[&::-webkit-slider-thumb]:w-2.5
+[&::-webkit-slider-thumb]:h-2.5
+[&::-webkit-slider-thumb]:-mt-0.5
+[&::-webkit-slider-thumb]:appearance-none
+[&::-webkit-slider-thumb]:bg-white
+[&::-webkit-slider-thumb]:shadow-[0_0_0_4px_rgba(37,99,235,1)]
+[&::-webkit-slider-thumb]:rounded-full
+[&::-webkit-slider-thumb]:transition-all
+[&::-webkit-slider-thumb]:duration-150
+[&::-webkit-slider-thumb]:ease-in-out
+[&::-webkit-slider-thumb]:dark:bg-slate-700
+
+[&::-moz-range-thumb]:w-2.5
+[&::-moz-range-thumb]:h-2.5
+[&::-moz-range-thumb]:appearance-none
+[&::-moz-range-thumb]:bg-white
+[&::-moz-range-thumb]:border-4
+[&::-moz-range-thumb]:border-blue-600
+[&::-moz-range-thumb]:rounded-full
+[&::-moz-range-thumb]:transition-all
+[&::-moz-range-thumb]:duration-150
+[&::-moz-range-thumb]:ease-in-out
+
+[&::-webkit-slider-runnable-track]:w-full
+[&::-webkit-slider-runnable-track]:h-2
+[&::-webkit-slider-runnable-track]:bg-gray-100
+[&::-webkit-slider-runnable-track]:rounded-full
+[&::-webkit-slider-runnable-track]:dark:bg-gray-700
+
+[&::-moz-range-track]:w-full
+[&::-moz-range-track]:h-2
+[&::-moz-range-track]:bg-gray-100
+[&::-moz-range-track]:rounded-full" id="slider1" min="-174" max="174" onmouseup="updateSliders()"
+            ontouchend="updateSliders()">
+
+        <label for="slider2">Joint 2: <span id="slider2feedback">0</span>&deg;</label>
+        <input type="range" class="w-full bg-transparent cursor-pointer appearance-none disabled:opacity-50 disabled:pointer-events-none focus:outline-none
+[&::-webkit-slider-thumb]:w-2.5
+[&::-webkit-slider-thumb]:h-2.5
+[&::-webkit-slider-thumb]:-mt-0.5
+[&::-webkit-slider-thumb]:appearance-none
+[&::-webkit-slider-thumb]:bg-white
+[&::-webkit-slider-thumb]:shadow-[0_0_0_4px_rgba(37,99,235,1)]
+[&::-webkit-slider-thumb]:rounded-full
+[&::-webkit-slider-thumb]:transition-all
+[&::-webkit-slider-thumb]:duration-150
+[&::-webkit-slider-thumb]:ease-in-out
+[&::-webkit-slider-thumb]:dark:bg-slate-700
+
+[&::-moz-range-thumb]:w-2.5
+[&::-moz-range-thumb]:h-2.5
+[&::-moz-range-thumb]:appearance-none
+[&::-moz-range-thumb]:bg-white
+[&::-moz-range-thumb]:border-4
+[&::-moz-range-thumb]:border-blue-600
+[&::-moz-range-thumb]:rounded-full
+[&::-moz-range-thumb]:transition-all
+[&::-moz-range-thumb]:duration-150
+[&::-moz-range-thumb]:ease-in-out
+
+[&::-webkit-slider-runnable-track]:w-full
+[&::-webkit-slider-runnable-track]:h-2
+[&::-webkit-slider-runnable-track]:bg-gray-100
+[&::-webkit-slider-runnable-track]:rounded-full
+[&::-webkit-slider-runnable-track]:dark:bg-gray-700
+
+[&::-moz-range-track]:w-full
+[&::-moz-range-track]:h-2
+[&::-moz-range-track]:bg-gray-100
+[&::-moz-range-track]:rounded-full" id="slider2" min="-174" max="174" onmouseup="updateSliders()"
+            ontouchend="updateSliders()">
+
+        <label for="slider3">Joint 3: <span id="slider3feedback">0</span>&deg;</label>
+        <input type="range" class="w-full bg-transparent cursor-pointer appearance-none disabled:opacity-50 disabled:pointer-events-none focus:outline-none
+[&::-webkit-slider-thumb]:w-2.5
+[&::-webkit-slider-thumb]:h-2.5
+[&::-webkit-slider-thumb]:-mt-0.5
+[&::-webkit-slider-thumb]:appearance-none
+[&::-webkit-slider-thumb]:bg-white
+[&::-webkit-slider-thumb]:shadow-[0_0_0_4px_rgba(37,99,235,1)]
+[&::-webkit-slider-thumb]:rounded-full
+[&::-webkit-slider-thumb]:transition-all
+[&::-webkit-slider-thumb]:duration-150
+[&::-webkit-slider-thumb]:ease-in-out
+[&::-webkit-slider-thumb]:dark:bg-slate-700
+
+[&::-moz-range-thumb]:w-2.5
+[&::-moz-range-thumb]:h-2.5
+[&::-moz-range-thumb]:appearance-none
+[&::-moz-range-thumb]:bg-white
+[&::-moz-range-thumb]:border-4
+[&::-moz-range-thumb]:border-blue-600
+[&::-moz-range-thumb]:rounded-full
+[&::-moz-range-thumb]:transition-all
+[&::-moz-range-thumb]:duration-150
+[&::-moz-range-thumb]:ease-in-out
+
+[&::-webkit-slider-runnable-track]:w-full
+[&::-webkit-slider-runnable-track]:h-2
+[&::-webkit-slider-runnable-track]:bg-gray-100
+[&::-webkit-slider-runnable-track]:rounded-full
+[&::-webkit-slider-runnable-track]:dark:bg-gray-700
+
+[&::-moz-range-track]:w-full
+[&::-moz-range-track]:h-2
+[&::-moz-range-track]:bg-gray-100
+[&::-moz-range-track]:rounded-full" id="slider3" min="-174" max="174" onmouseup="updateSliders()"
+            ontouchend="updateSliders()">
+
+        <label for="slider4">Joint 4: <span id="slider4feedback">0</span>&deg;</label>
+        <input type="range" class="w-full bg-transparent cursor-pointer appearance-none disabled:opacity-50 disabled:pointer-events-none focus:outline-none
+[&::-webkit-slider-thumb]:w-2.5
+[&::-webkit-slider-thumb]:h-2.5
+[&::-webkit-slider-thumb]:-mt-0.5
+[&::-webkit-slider-thumb]:appearance-none
+[&::-webkit-slider-thumb]:bg-white
+[&::-webkit-slider-thumb]:shadow-[0_0_0_4px_rgba(37,99,235,1)]
+[&::-webkit-slider-thumb]:rounded-full
+[&::-webkit-slider-thumb]:transition-all
+[&::-webkit-slider-thumb]:duration-150
+[&::-webkit-slider-thumb]:ease-in-out
+[&::-webkit-slider-thumb]:dark:bg-slate-700
+
+[&::-moz-range-thumb]:w-2.5
+[&::-moz-range-thumb]:h-2.5
+[&::-moz-range-thumb]:appearance-none
+[&::-moz-range-thumb]:bg-white
+[&::-moz-range-thumb]:border-4
+[&::-moz-range-thumb]:border-blue-600
+[&::-moz-range-thumb]:rounded-full
+[&::-moz-range-thumb]:transition-all
+[&::-moz-range-thumb]:duration-150
+[&::-moz-range-thumb]:ease-in-out
+
+[&::-webkit-slider-runnable-track]:w-full
+[&::-webkit-slider-runnable-track]:h-2
+[&::-webkit-slider-runnable-track]:bg-gray-100
+[&::-webkit-slider-runnable-track]:rounded-full
+[&::-webkit-slider-runnable-track]:dark:bg-gray-700
+
+[&::-moz-range-track]:w-full
+[&::-moz-range-track]:h-2
+[&::-moz-range-track]:bg-gray-100
+[&::-moz-range-track]:rounded-full" id="slider4" min="-174" max="174" onmouseup="updateSliders()"
+            ontouchend="updateSliders()">
+
+        <label for="slider5">Joint 5: <span id="slider5feedback">0</span>&deg;</label>
+        <input type="range" class="w-full bg-transparent cursor-pointer appearance-none disabled:opacity-50 disabled:pointer-events-none focus:outline-none
+[&::-webkit-slider-thumb]:w-2.5
+[&::-webkit-slider-thumb]:h-2.5
+[&::-webkit-slider-thumb]:-mt-0.5
+[&::-webkit-slider-thumb]:appearance-none
+[&::-webkit-slider-thumb]:bg-white
+[&::-webkit-slider-thumb]:shadow-[0_0_0_4px_rgba(37,99,235,1)]
+[&::-webkit-slider-thumb]:rounded-full
+[&::-webkit-slider-thumb]:transition-all
+[&::-webkit-slider-thumb]:duration-150
+[&::-webkit-slider-thumb]:ease-in-out
+[&::-webkit-slider-thumb]:dark:bg-slate-700
+
+[&::-moz-range-thumb]:w-2.5
+[&::-moz-range-thumb]:h-2.5
+[&::-moz-range-thumb]:appearance-none
+[&::-moz-range-thumb]:bg-white
+[&::-moz-range-thumb]:border-4
+[&::-moz-range-thumb]:border-blue-600
+[&::-moz-range-thumb]:rounded-full
+[&::-moz-range-thumb]:transition-all
+[&::-moz-range-thumb]:duration-150
+[&::-moz-range-thumb]:ease-in-out
+
+[&::-webkit-slider-runnable-track]:w-full
+[&::-webkit-slider-runnable-track]:h-2
+[&::-webkit-slider-runnable-track]:bg-gray-100
+[&::-webkit-slider-runnable-track]:rounded-full
+[&::-webkit-slider-runnable-track]:dark:bg-gray-700
+
+[&::-moz-range-track]:w-full
+[&::-moz-range-track]:h-2
+[&::-moz-range-track]:bg-gray-100
+[&::-moz-range-track]:rounded-full" id="slider5" min="-174" max="174" onmouseup="updateSliders()"
+            ontouchend="updateSliders()">
+
+
+    </div>
+
 
     <script type="text/javascript">
         // Connecting to ROS
@@ -91,6 +330,14 @@ Vector3 angular
             messageType: 'geometry_msgs/Twist'
         });
 
+        var cmdAngle = new ROSLIB.Topic({
+            ros: ros,
+            name: '/arm_joint_angles',
+            messageType: 'aubo_interface_msgs/JointAngles'
+        });
+
+
+
         // var twist = new ROSLIB.Message({
         //     linear: {
         //         x: 0.1,
@@ -107,24 +354,41 @@ Vector3 angular
         // Create JoyStick object into the DIV 'joyDiv'
         var joy = new JoyStick('joyDiv');
 
+        function updateSliders() {
+            slider0feedback.innerHTML = slider0.value;
+            slider1feedback.innerHTML = slider1.value;
+            slider2feedback.innerHTML = slider2.value;
+            slider3feedback.innerHTML = slider3.value;
+            slider4feedback.innerHTML = slider4.value;
+            slider5feedback.innerHTML = slider5.value;
+
+            var angles = new ROSLIB.Message({
+                joint0: slider0.value,
+                joint1: slider1.value,
+                joint2: slider2.value,
+                joint3: slider3.value,
+                joint4: slider4.value,
+                joint5: slider5.value
+            });
+            cmdAngle.publish(angles);
+        }
+
         setInterval(function () {
             var twist = new ROSLIB.Message({
                 linear: {
-                    x: parseFloat(joy.GetY() / 1000),
+                    x: parseFloat(joy.GetY() / 200),
                     y: 0,
                     z: 0
                 },
                 angular: {
                     x: 0,
                     y: 0,
-                    z: -parseFloat(joy.GetX() / 1000)
+                    z: -parseFloat(joy.GetX() / 200)
                 }
             });
             cmdVel.publish(twist);
         }, 50);
     </script>
 </body>
-
-
 
 </html>
