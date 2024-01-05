@@ -130,11 +130,12 @@ uint8 driver_state</pre>
 
 
     <div class="m-2 p-2 border-2 rounded-lg">
-        <h2 class="text-2xl font-bold">Message #3: JointAngles</h2>
-        The JoinAngles message provides control for the robotic arm. It is on the topic <code>/arm_joint_angles</code>
+        <h2 class="text-2xl font-bold">Message #3: ArmJoints (Set Angles)</h2>
+        The JoinAngles message provides control for the robotic arm. It is on the topic
+        <code>/set_arm_joint_angles</code>
         and of
         type
-        <code>aubo_interface_msgs/JointAngles</code>, defined as:
+        <code>aubo_interface_msgs/ArmJoints</code>, defined as:
         <pre class="bg-teal-100 p-2 rounded-lg w-fit">
 float64 joint0
 float64 joint1
@@ -368,13 +369,52 @@ float64 joint5</pre>
         <button onclick="zeroAngle()">Reset to Zero</button>
     </div>
 
+    <div class="m-2 p-2 border-2 rounded-lg">
+        <h2 class="text-2xl font-bold">Message #3: ArmJoints (Set Vel and Acc)</h2>
+        The ArmJoints message is also used to set the maximum velocity (up to 180deg/s) and acceleration (up to
+        180deg/s^2) of the arm joints. It is on the topics
+        <code>/set_arm_joint_vel</code> and <code>/set_arm_joint_acc</code> and of
+        type
+        <code>aubo_interface_msgs/ArmJoints</code>, defined as:
+        <pre class="bg-teal-100 p-2 rounded-lg w-fit">
+float64 joint0
+float64 joint1
+float64 joint2
+float64 joint3
+float64 joint4
+float64 joint5</pre>
+    </div>
+
+    <div class="m-2 p-2 border-2 rounded-lg">
+        <h2 class="text-2xl font-bold">Message #3: ArmJoints (Get Angles)</h2>
+        The ArmJoints message is also used to provide feedback from the rover platform. It is on the topic
+        <code>/get_arm_joint_angles</code> and of
+        type
+        <code>aubo_interface_msgs/ArmJoints</code>, defined as:
+        <pre class="bg-teal-100 p-2 rounded-lg w-fit">
+float64 joint0
+float64 joint1
+float64 joint2
+float64 joint3
+float64 joint4
+float64 joint5</pre>
+
+        <p>Some key feedback can be seen below: </p>
+        <p>Joint 0 Angle: <span style="font-bold" id="arm_status_joint_0"></span>&deg;</p>
+        <p>Joint 1 Angle: <span style="font-bold" id="arm_status_joint_1"></span>&deg;</p>
+        <p>Joint 2 Angle: <span style="font-bold" id="arm_status_joint_2"></span>&deg;</p>
+        <p>Joint 3 Angle: <span style="font-bold" id="arm_status_joint_3"></span>&deg;</p>
+        <p>Joing 4 Angle: <span style="font-bold" id="arm_status_joint_4"></span>&deg;</p>
+        <p>Joing 5 Angle: <span style="font-bold" id="arm_status_joint_5"></span>&deg;</p>
+    </div>
+
 
     <script type="text/javascript">
         // Connecting to ROS
         // -----------------
 
         var ros = new ROSLIB.Ros({
-            url: 'ws://192.168.0.101:9090'
+            url: 'ws://192.168.0.100:9090'
         });
 
         ros.on('connection', function () {
@@ -396,7 +436,7 @@ float64 joint5</pre>
         bunker_status_listener = new ROSLIB.Topic({
             ros,
             name: "/bunker_status",
-            messageType: "bunker_msgs/BunkerStatus",
+            messageType: "bunker_msgs/BunkerStatus"
         });
 
         bunker_status_listener.subscribe((message) => {
@@ -415,6 +455,27 @@ float64 joint5</pre>
         });
 
 
+        arm_status_listener = new ROSLIB.Topic({
+            ros,
+            name: "/get_arm_joint_angles",
+            messageType: 'aubo_interface_msgs/ArmJoints'
+        });
+
+        arm_status_listener.subscribe((message) => {
+            // const ul = document.getElementById("messages");
+            // const newMessage = document.createElement("li");
+            // newMessage.appendChild(document.createTextNode(message.data));
+            // ul.appendChild(newMessage);
+            console.log(message);
+            document.getElementById("arm_status_joint_0").innerHTML = message.joint0.toFixed(4);
+            document.getElementById("arm_status_joint_1").innerHTML = message.joint1.toFixed(4);
+            document.getElementById("arm_status_joint_2").innerHTML = message.joint2.toFixed(4);
+            document.getElementById("arm_status_joint_3").innerHTML = message.joint3.toFixed(4);
+            document.getElementById("arm_status_joint_4").innerHTML = message.joint4.toFixed(4);
+            document.getElementById("arm_status_joint_5").innerHTML = message.joint5.toFixed(4);
+        });
+
+
         // Publishing a Topic
         // ------------------
 
@@ -427,7 +488,7 @@ float64 joint5</pre>
         var cmdAngle = new ROSLIB.Topic({
             ros: ros,
             name: '/set_arm_joint_angles',
-            messageType: 'aubo_interface_msgs/JointAngles'
+            messageType: 'aubo_interface_msgs/ArmJoints'
         });
 
 
